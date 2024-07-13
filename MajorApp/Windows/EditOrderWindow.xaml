@@ -1,0 +1,65 @@
+﻿<Window x:Class="MajorAppMVVM2.EditOrderWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        Title="Редактирование заявки" Height="700" Width="700"
+        mc:Ignorable="d" WindowStartupLocation="CenterScreen">
+    <Grid Background="#ffdadada">
+        <Border MinWidth="400" Margin="15" Background="white" 
+                VerticalAlignment="Center" Padding="30" MaxWidth="550" CornerRadius="20">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="30" Color="LightGray" ShadowDepth="0"/>
+            </Border.Effect>
+            <StackPanel>
+                <TextBlock Text="Редактирование заявки" FontSize="30" FontWeight="Bold" Margin="0 0 0 20"/>
+
+                <!-- Статус -->
+                <ComboBox x:Name="comboBoxStatus" materialDesign:HintAssist.Hint="Статус заявки" Style="{StaticResource MaterialDesignFloatingHintComboBox}" SelectionChanged="ComboBoxStatus_SelectionChanged">
+                    <ComboBoxItem Content="Новая" />
+                    <ComboBoxItem Content="Передано на выполнение" />
+                    <ComboBoxItem Content="Выполнено" />
+                    <ComboBoxItem Content="Отменена" />
+                </ComboBox>
+
+                <!-- Описание груза -->
+                <TextBox x:Name="textBoxDescription" materialDesign:HintAssist.Hint="Описание груза" Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+
+                <!-- Адрес получения -->
+                <TextBox x:Name="textBoxPickupAddress" materialDesign:HintAssist.Hint="Адрес получения" Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+
+                <!-- Адрес доставки -->
+                <TextBox x:Name="textBoxDeliveryAddress" materialDesign:HintAssist.Hint="Адрес доставки" Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+
+                <!-- Комментарий -->
+                <TextBox x:Name="textBoxComment" materialDesign:HintAssist.Hint="Комментарий" Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+
+                <!-- Исполнитель -->
+                <ComboBox x:Name="comboBoxExecutor"
+                materialDesign:HintAssist.Hint="Исполнитель"
+                IsEditable="True"
+                IsReadOnly="False"
+                DisplayMemberPath="Name"
+                SelectedValuePath="Id"
+                Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                 IsTextSearchEnabled="True"/>
+
+                <!-- Ширина -->
+                <TextBox x:Name="textBoxWidth" materialDesign:HintAssist.Hint="Ширина (см)" Style="{StaticResource MaterialDesignFloatingHintTextBox}" PreviewTextInput="NumericOnly_PreviewTextInput"/>
+
+                <!-- Высота -->
+                <TextBox x:Name="textBoxHeight" materialDesign:HintAssist.Hint="Высота (см)" Style="{StaticResource MaterialDesignFloatingHintTextBox}" PreviewTextInput="NumericOnly_PreviewTextInput"/>
+
+                <!-- Глубина -->
+                <TextBox x:Name="textBoxDepth" materialDesign:HintAssist.Hint="Глубина (см)" Style="{StaticResource MaterialDesignFloatingHintTextBox}" PreviewTextInput="NumericOnly_PreviewTextInput"/>
+
+                <!-- Вес -->
+                <TextBox x:Name="textBoxWeight" materialDesign:HintAssist.Hint="Вес (кг)" Style="{StaticResource MaterialDesignFloatingHintTextBox}" PreviewTextInput="NumericOnly_PreviewTextInput"/>
+
+                <!-- Кнопка для создания заявки -->
+                <Button Content="Сохранить изменения" Margin="0 20" Click="SaveChanges_Click"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>
