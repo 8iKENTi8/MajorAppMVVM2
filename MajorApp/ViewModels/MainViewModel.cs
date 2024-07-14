@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
@@ -15,9 +14,6 @@ namespace MajorAppMVVM2.ViewModels
 {
     public class MainViewModel : INotifyPropertyChanged
     {
-        // HttpClient для выполнения HTTP-запросов
-        private static readonly HttpClient client = new HttpClient();
-
         // Поля для хранения данных ViewModel
         private List<Executor> executors;
         private string description;
@@ -224,14 +220,10 @@ namespace MajorAppMVVM2.ViewModels
                 Weight = Weight
             };
 
-            // Сериализация заявки в JSON
-            var json = JsonSerializer.Serialize(order);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-
             try
             {
-                // Отправка POST-запроса на создание заявки
-                var response = await client.PostAsync("https://localhost:5001/api/orders", content);
+                // Отправка POST-запроса на создание заявки с использованием HttpClientUtils
+                var response = await HttpClientUtils.SendRequestAsync(HttpMethod.Post, "https://localhost:5001/api/orders", order);
                 if (response.IsSuccessStatusCode)
                 {
                     // Успешное создание заявки

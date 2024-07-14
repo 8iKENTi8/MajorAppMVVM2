@@ -16,7 +16,6 @@ namespace MajorAppMVVM2.ViewModels
 {
     public class EditOrderViewModel : INotifyPropertyChanged
     {
-        private static readonly HttpClient client = new HttpClient();
         private readonly StatusChangeLogger _statusChangeLogger;
         private Order _order;
         private List<Executor> _executors;
@@ -285,11 +284,9 @@ namespace MajorAppMVVM2.ViewModels
                 _order.Weight = Weight;
                 _order.Status = Status;
 
-                var json = JsonSerializer.Serialize(_order);
-                var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-                var response = await client.PutAsync($"https://localhost:5001/api/orders/{_order.Id}", content);
+                var response = await HttpClientUtils.SendRequestAsync(HttpMethod.Put, $"https://localhost:5001/api/orders/{_order.Id}", _order);
 
-                if (response.IsSuccessStatusCode)
+                if (response != null && response.IsSuccessStatusCode)
                 {
                     MessageBox.Show("Изменения сохранены");
                     // Закрытие окна редактирования после успешного сохранения
@@ -297,7 +294,7 @@ namespace MajorAppMVVM2.ViewModels
                 }
                 else
                 {
-                    MessageBox.Show($"Ошибка при сохранении изменений. Код состояния: {response.StatusCode}");
+                    MessageBox.Show($"Ошибка при сохранении изменений. Код состояния: {response?.StatusCode}");
                 }
             }
             catch (HttpRequestException ex)
@@ -326,7 +323,6 @@ namespace MajorAppMVVM2.ViewModels
 
             // Установка выбранного исполнителя
             SelectedExecutor = Executors?.FirstOrDefault(e => e.Name == _order.Executor);
-
             // Устанавливаем доступность полей в зависимости от статуса
             OnPropertyChanged(nameof(IsDescriptionEditable));
             OnPropertyChanged(nameof(IsPickupAddressEditable));

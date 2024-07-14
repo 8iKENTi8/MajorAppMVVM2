@@ -8,23 +8,32 @@ namespace MajorAppMVVM2.Utils
 {
     public static class ExecutorUtils
     {
-        private static readonly HttpClient client = new HttpClient();
-
         public static async Task<List<Executor>> GetExecutorsAsync()
         {
             try
             {
                 // Отправляем GET запрос на сервер для получения списка исполнителей
-                var response = await client.GetStringAsync("https://localhost:5001/api/orders/executors");
+                var response = await HttpClientUtils.SendRequestAsync(HttpMethod.Get, "https://localhost:5001/api/orders/executors");
 
-                // Десериализация JSON данных в список исполнителей с явно установленными параметрами
-                var executors = JsonSerializer.Deserialize<List<Executor>>(response, new JsonSerializerOptions
+                // Проверяем успешность запроса
+                if (response != null && response.IsSuccessStatusCode)
                 {
-                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                    PropertyNameCaseInsensitive = true // Игнорировать регистр имен свойств
-                });
+                    var jsonResponse = await response.Content.ReadAsStringAsync();
 
-                return executors ?? new List<Executor>(); // Возвращаем пустой список, если десериализация не удалась
+                    // Десериализация JSON данных в список исполнителей с явно установленными параметрами
+                    var executors = JsonSerializer.Deserialize<List<Executor>>(jsonResponse, new JsonSerializerOptions
+                    {
+                        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                        PropertyNameCaseInsensitive = true // Игнорировать регистр имен свойств
+                    });
+
+                    return executors ?? new List<Executor>(); // Возвращаем пустой список, если десериализация не удалась
+                }
+                else
+                {
+                    // Обработка неуспешного ответа
+                    throw new HttpRequestException($"Не удалось получить список исполнителей. Код статуса: {response?.StatusCode}");
+                }
             }
             catch (HttpRequestException ex)
             {
