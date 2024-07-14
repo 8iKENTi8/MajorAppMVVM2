@@ -89,7 +89,7 @@ namespace MajorAppMVVM2.ViewModels
             set
             {
                 _executors = value;
-                OnPropertyChanged(nameof(Executors));  // Указание имени свойства
+                OnPropertyChanged(nameof(Executors));
                 ((RelayCommand)SaveChangesCommand).RaiseCanExecuteChanged();
             }
         }
@@ -101,7 +101,6 @@ namespace MajorAppMVVM2.ViewModels
             {
                 _selectedExecutor = value;
                 OnPropertyChanged(nameof(SelectedExecutor));
-                // Обновление состояния команды при изменении выбранного исполнителя
                 ((RelayCommand)SaveChangesCommand).RaiseCanExecuteChanged();
             }
         }
@@ -113,7 +112,6 @@ namespace MajorAppMVVM2.ViewModels
             {
                 _description = value;
                 OnPropertyChanged(nameof(Description));
-                // Обновление состояния команды при изменении описания
                 ((RelayCommand)SaveChangesCommand).RaiseCanExecuteChanged();
             }
         }
@@ -125,7 +123,6 @@ namespace MajorAppMVVM2.ViewModels
             {
                 _pickupAddress = value;
                 OnPropertyChanged(nameof(PickupAddress));
-                // Обновление состояния команды при изменении адреса подачи
                 ((RelayCommand)SaveChangesCommand).RaiseCanExecuteChanged();
             }
         }
@@ -137,7 +134,6 @@ namespace MajorAppMVVM2.ViewModels
             {
                 _deliveryAddress = value;
                 OnPropertyChanged(nameof(DeliveryAddress));
-                // Обновление состояния команды при изменении адреса доставки
                 ((RelayCommand)SaveChangesCommand).RaiseCanExecuteChanged();
             }
         }
@@ -149,7 +145,6 @@ namespace MajorAppMVVM2.ViewModels
             {
                 _comment = value;
                 OnPropertyChanged(nameof(Comment));
-                // Обновление состояния команды при изменении комментария
                 ((RelayCommand)SaveChangesCommand).RaiseCanExecuteChanged();
             }
         }
@@ -161,7 +156,6 @@ namespace MajorAppMVVM2.ViewModels
             {
                 _width = value;
                 OnPropertyChanged(nameof(Width));
-                // Обновление состояния команды при изменении ширины
                 ((RelayCommand)SaveChangesCommand).RaiseCanExecuteChanged();
             }
         }
@@ -173,7 +167,6 @@ namespace MajorAppMVVM2.ViewModels
             {
                 _height = value;
                 OnPropertyChanged(nameof(Height));
-                // Обновление состояния команды при изменении высоты
                 ((RelayCommand)SaveChangesCommand).RaiseCanExecuteChanged();
             }
         }
@@ -185,7 +178,6 @@ namespace MajorAppMVVM2.ViewModels
             {
                 _depth = value;
                 OnPropertyChanged(nameof(Depth));
-                // Обновление состояния команды при изменении глубины
                 ((RelayCommand)SaveChangesCommand).RaiseCanExecuteChanged();
             }
         }
@@ -197,7 +189,6 @@ namespace MajorAppMVVM2.ViewModels
             {
                 _weight = value;
                 OnPropertyChanged(nameof(Weight));
-                // Обновление состояния команды при изменении веса
                 ((RelayCommand)SaveChangesCommand).RaiseCanExecuteChanged();
             }
         }
@@ -209,7 +200,6 @@ namespace MajorAppMVVM2.ViewModels
             {
                 _createdDate = value;
                 OnPropertyChanged(nameof(CreatedDate));
-                // Обновление состояния команды при изменении даты создания
                 ((RelayCommand)SaveChangesCommand).RaiseCanExecuteChanged();
             }
         }
@@ -223,13 +213,33 @@ namespace MajorAppMVVM2.ViewModels
                 OnPropertyChanged(nameof(Status));
                 // Обновление состояния команды при изменении статуса
                 ((RelayCommand)SaveChangesCommand).RaiseCanExecuteChanged();
+                // Устанавливаем доступность полей в зависимости от статуса
+                OnPropertyChanged(nameof(IsDescriptionEditable));
+                OnPropertyChanged(nameof(IsPickupAddressEditable));
+                OnPropertyChanged(nameof(IsDeliveryAddressEditable));
+                OnPropertyChanged(nameof(IsExecutorEditable));
+                OnPropertyChanged(nameof(IsWidthEditable));
+                OnPropertyChanged(nameof(IsHeightEditable));
+                OnPropertyChanged(nameof(IsDepthEditable));
+                OnPropertyChanged(nameof(IsWeightEditable));
             }
         }
 
         public ICommand SaveChangesCommand { get; private set; }
 
+        // Определяем, можно ли редактировать поля в зависимости от статуса
+        public bool IsDescriptionEditable => Status == "Новая";
+        public bool IsPickupAddressEditable => Status == "Новая";
+        public bool IsDeliveryAddressEditable => Status == "Новая";
+        public bool IsExecutorEditable => Status == "Новая";
+        public bool IsWidthEditable => Status == "Новая";
+        public bool IsHeightEditable => Status == "Новая";
+        public bool IsDepthEditable => Status == "Новая";
+        public bool IsWeightEditable => Status == "Новая";
+
         private bool CanSaveChanges()
         {
+            // Проверка, что статус можно редактировать
             bool canSave = !string.IsNullOrWhiteSpace(Description) &&
                            !string.IsNullOrWhiteSpace(PickupAddress) &&
                            !string.IsNullOrWhiteSpace(DeliveryAddress) &&
@@ -296,6 +306,16 @@ namespace MajorAppMVVM2.ViewModels
 
             // Установка выбранного исполнителя
             SelectedExecutor = Executors?.FirstOrDefault(e => e.Name == _order.Executor);
+
+            // Устанавливаем доступность полей в зависимости от статуса
+            OnPropertyChanged(nameof(IsDescriptionEditable));
+            OnPropertyChanged(nameof(IsPickupAddressEditable));
+            OnPropertyChanged(nameof(IsDeliveryAddressEditable));
+            OnPropertyChanged(nameof(IsExecutorEditable));
+            OnPropertyChanged(nameof(IsWidthEditable));
+            OnPropertyChanged(nameof(IsHeightEditable));
+            OnPropertyChanged(nameof(IsDepthEditable));
+            OnPropertyChanged(nameof(IsWeightEditable));
         }
 
         private void HideWindow()
@@ -317,7 +337,15 @@ namespace MajorAppMVVM2.ViewModels
                 propertyName == nameof(Depth) ||
                 propertyName == nameof(Weight) ||
                 propertyName == nameof(CreatedDate) ||
-                propertyName == nameof(Status))
+                propertyName == nameof(Status) ||
+                propertyName == nameof(IsDescriptionEditable) ||
+                propertyName == nameof(IsPickupAddressEditable) ||
+                propertyName == nameof(IsDeliveryAddressEditable) ||
+                propertyName == nameof(IsExecutorEditable) ||
+                propertyName == nameof(IsWidthEditable) ||
+                propertyName == nameof(IsHeightEditable) ||
+                propertyName == nameof(IsDepthEditable) ||
+                propertyName == nameof(IsWeightEditable))
             {
                 ((RelayCommand)SaveChangesCommand).RaiseCanExecuteChanged();
             }
