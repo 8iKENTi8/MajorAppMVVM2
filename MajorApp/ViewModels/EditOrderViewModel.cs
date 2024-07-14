@@ -10,6 +10,8 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.IO;
+
 
 namespace MajorAppMVVM2.ViewModels
 {
@@ -53,7 +55,8 @@ namespace MajorAppMVVM2.ViewModels
         public EditOrderViewModel(Order order)
         {
             _order = order;
-            _statusChangeLogger = new StatusChangeLogger("status_change.log");
+            string logDirectoryPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs");
+            _statusChangeLogger = new StatusChangeLogger(logDirectoryPath);
             _order.AttachLogger(_statusChangeLogger);
 
             // Инициализация команд

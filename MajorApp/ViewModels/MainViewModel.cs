@@ -195,8 +195,6 @@ namespace MajorAppMVVM2.ViewModels
                              SelectedExecutor != null &&
                              Width > 0 && Height > 0 && Depth > 0 && Weight > 0 && CreatedDate.HasValue;
 
-            // Для отладки
-            Console.WriteLine($"CanCreateOrder: {canCreate}");
             return canCreate;
         }
 

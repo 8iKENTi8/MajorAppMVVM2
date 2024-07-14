@@ -14,11 +14,11 @@ namespace MajorAppMVVM2.ViewModels
 {
     public class OrdersViewModel : INotifyPropertyChanged
     {
-        private ObservableCollection<Order> _orders;  
-        private string _searchText;  
-        private DateTime? _startDate;  
-        private DateTime? _endDate;  
-        private readonly Window _window;  
+        private ObservableCollection<Order> _orders;
+        private string _searchText;
+        private DateTime? _startDate;
+        private DateTime? _endDate;
+        private readonly Window _window;
 
         // Свойство для получения и установки коллекции заказов
         public ObservableCollection<Order> Orders
@@ -27,7 +27,7 @@ namespace MajorAppMVVM2.ViewModels
             set
             {
                 _orders = value;
-                OnPropertyChanged(nameof(Orders));  
+                OnPropertyChanged(nameof(Orders));
             }
         }
 
@@ -38,8 +38,8 @@ namespace MajorAppMVVM2.ViewModels
             set
             {
                 _searchText = value;
-                OnPropertyChanged(nameof(SearchText));  
-                FilterOrders();  
+                OnPropertyChanged(nameof(SearchText));
+                FilterOrders();
             }
         }
 
@@ -50,8 +50,8 @@ namespace MajorAppMVVM2.ViewModels
             set
             {
                 _startDate = value;
-                OnPropertyChanged(nameof(StartDate));  
-                FilterOrders();  
+                OnPropertyChanged(nameof(StartDate));
+                FilterOrders();
             }
         }
 
@@ -62,8 +62,8 @@ namespace MajorAppMVVM2.ViewModels
             set
             {
                 _endDate = value;
-                OnPropertyChanged(nameof(EndDate));  
-                FilterOrders();  
+                OnPropertyChanged(nameof(EndDate));
+                FilterOrders();
             }
         }
 
@@ -79,7 +79,7 @@ namespace MajorAppMVVM2.ViewModels
         // Конструктор для инициализации команд и загрузки заказов
         public OrdersViewModel(Window window)
         {
-            _window = window;  
+            _window = window;
             CreateNewOrderCommand = new RelayCommand(CreateNewOrder);  // Инициализация команды создания новой заявки
             EditOrderCommand = new RelayCommand<Order>(EditOrder, order => order != null);  // Инициализация команды редактирования заявки
             DeleteOrderCommand = new RelayCommand<Order>(DeleteOrder, order => order != null);  // Инициализация команды удаления заявки
@@ -100,30 +100,30 @@ namespace MajorAppMVVM2.ViewModels
                 }
                 else
                 {
-                    MessageBox.Show($"Failed to load orders. Status Code: {response.StatusCode}");  // Сообщаем о неудачной загрузке
+                    MessageBox.Show($"Не удалось загрузить заказы. Код состояния: {response.StatusCode}");  // Сообщаем о неудачной загрузке
                 }
             }
             catch (HttpRequestException ex)
             {
-                MessageBox.Show($"Request error: {ex.Message}");  // Обработка ошибок при запросе данных
+                MessageBox.Show($"Ошибка запроса: {ex.Message}");  // Обработка ошибок при запросе данных
             }
         }
 
         // Метод для создания новой заявки
         private void CreateNewOrder()
         {
-            var createOrderWindow = new MainWindow(); 
-            createOrderWindow.Closed += (s, e) => _window.Show();  
-            createOrderWindow.Show();  
-            _window.Hide();  
+            var createOrderWindow = new MainWindow();
+            createOrderWindow.Closed += (s, e) => _window.Show();
+            createOrderWindow.Show();
+            _window.Hide();
         }
 
         // Метод для редактирования выбранной заявки
         private void EditOrder(Order order)
         {
-            var editOrderWindow = new EditOrderWindow(order);  
-            editOrderWindow.ShowDialog();  
-            LoadOrders();  
+            var editOrderWindow = new EditOrderWindow(order);
+            editOrderWindow.ShowDialog();
+            LoadOrders();
         }
 
         // Асинхронный метод для удаления выбранной заявки
@@ -132,7 +132,7 @@ namespace MajorAppMVVM2.ViewModels
             if (order == null)
                 return;
 
-            var result = MessageBox.Show($"Вы уверены, что хотите удалить заказ {order.Id}?", "Удалить заявку", MessageBoxButton.YesNo);  
+            var result = MessageBox.Show($"Вы уверены, что хотите удалить заказ {order.Id}?", "Удалить заявку", MessageBoxButton.YesNo, MessageBoxImage.Question);  // Сообщаем о необходимости подтверждения удаления заявки
 
             if (result == MessageBoxResult.Yes)
             {
@@ -142,17 +142,17 @@ namespace MajorAppMVVM2.ViewModels
 
                     if (response.IsSuccessStatusCode)
                     {
-                        MessageBox.Show("Order deleted successfully.");  // Сообщаем об успешном удалении заявки
+                        MessageBox.Show("Заявка успешно удалена.");  // Сообщаем об успешном удалении заявки
                         LoadOrders();  // Перезагружаем заказы после удаления заявки
                     }
                     else
                     {
-                        MessageBox.Show($"Failed to delete order. Status Code: {response.StatusCode}");  // Сообщаем о неудачном удалении заявки
+                        MessageBox.Show($"Не удалось удалить заявку. Код состояния: {response.StatusCode}");  // Сообщаем о неудачном удалении заявки
                     }
                 }
                 catch (HttpRequestException ex)
                 {
-                    MessageBox.Show($"Request error: {ex.Message}");  // Обработка ошибок при запросе данных
+                    MessageBox.Show($"Ошибка запроса: {ex.Message}");  // Обработка ошибок при запросе данных
                 }
             }
         }
