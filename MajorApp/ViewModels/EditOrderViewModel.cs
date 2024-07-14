@@ -340,8 +340,9 @@ namespace MajorAppMVVM2.ViewModels
 
         private void HideWindow()
         {
-            Application.Current.Windows.OfType<Window>().SingleOrDefault(x => x.IsActive)?.Hide();
+            Application.Current.Windows.OfType<EditOrderWindow>().SingleOrDefault(x => x.IsActive)?.Close();
         }
+
 
         private async Task HandleStatusChangeToCancelled()
         {
@@ -366,7 +367,9 @@ namespace MajorAppMVVM2.ViewModels
                 // Обновляем данные в базе данных
                 await SaveChanges(updateComment: false);
 
-              
+                // Закрываем окно редактирования после успешного сохранения
+                HideWindow();
+
             }
             else
             {
