@@ -168,12 +168,12 @@ namespace MajorAppMVVM2.ViewModels
 
                     if (response.IsSuccessStatusCode)
                     {
-                        MessageBox.Show("Заявка успешно удалена.");  // Сообщаем об успешном удалении заявки
+                        MessageBox.Show("Заявка успешно удалена.");  
                         LoadOrders();  // Перезагружаем заказы после удаления заявки
                     }
                     else
                     {
-                        MessageBox.Show($"Не удалось удалить заявку. Код состояния: {response.StatusCode}");  // Сообщаем о неудачном удалении заявки
+                        MessageBox.Show($"Не удалось удалить заявку. Код состояния: {response.StatusCode}");  
                     }
                 }
                 catch (HttpRequestException ex)

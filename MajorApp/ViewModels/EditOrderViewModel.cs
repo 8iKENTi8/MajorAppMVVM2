@@ -32,8 +32,10 @@ namespace MajorAppMVVM2.ViewModels
         private DateTime? _createdDate;
         private string _status;
 
+        // Событие для уведомления об изменениях свойств
         public event PropertyChangedEventHandler PropertyChanged;
 
+        // Список возможных статусов заказа
         private List<string> _statuses = new List<string>
         {
             "Новая",
@@ -42,6 +44,7 @@ namespace MajorAppMVVM2.ViewModels
             "Отменена"
         };
 
+        // Свойство для получения и установки списка статусов
         public List<string> Statuses
         {
             get => _statuses;
@@ -55,9 +58,10 @@ namespace MajorAppMVVM2.ViewModels
         public EditOrderViewModel(Order order)
         {
             _order = order;
+            // Инициализация логгера для отслеживания изменений статуса
             string logDirectoryPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs");
             _statusChangeLogger = new StatusChangeLogger(logDirectoryPath);
-            _order.AttachLogger(_statusChangeLogger);
+            _order.AttachLogger(_statusChangeLogger); // Прикрепляем логгер к заказу
 
             // Инициализация команд
             SaveChangesCommand = new RelayCommand(async () => await SaveChanges(updateComment: true), CanSaveChanges);
@@ -66,6 +70,7 @@ namespace MajorAppMVVM2.ViewModels
             LoadDataAsync();
         }
 
+        // Метод для асинхронной загрузки данных о заказе и исполнителях
         private async void LoadDataAsync()
         {
             try
@@ -85,6 +90,7 @@ namespace MajorAppMVVM2.ViewModels
             }
         }
 
+        // Свойство для получения и установки списка исполнителей
         public List<Executor> Executors
         {
             get => _executors;
@@ -96,6 +102,7 @@ namespace MajorAppMVVM2.ViewModels
             }
         }
 
+        // Свойство для получения и установки выбранного исполнителя
         public Executor SelectedExecutor
         {
             get => _selectedExecutor;
@@ -107,6 +114,7 @@ namespace MajorAppMVVM2.ViewModels
             }
         }
 
+        // Свойство для получения и установки описания заказа
         public string Description
         {
             get => _description;
@@ -118,6 +126,7 @@ namespace MajorAppMVVM2.ViewModels
             }
         }
 
+        // Свойство для получения и установки адреса получения заказа
         public string PickupAddress
         {
             get => _pickupAddress;
@@ -129,6 +138,7 @@ namespace MajorAppMVVM2.ViewModels
             }
         }
 
+        // Свойство для получения и установки адреса доставки заказа
         public string DeliveryAddress
         {
             get => _deliveryAddress;
@@ -140,6 +150,7 @@ namespace MajorAppMVVM2.ViewModels
             }
         }
 
+        // Свойство для получения и установки комментария к заказу
         public string Comment
         {
             get => _comment;
@@ -151,6 +162,7 @@ namespace MajorAppMVVM2.ViewModels
             }
         }
 
+        // Свойство для получения и установки ширины груза
         public double Width
         {
             get => _width;
@@ -162,6 +174,7 @@ namespace MajorAppMVVM2.ViewModels
             }
         }
 
+        // Свойство для получения и установки высоты груза
         public double Height
         {
             get => _height;
@@ -173,6 +186,7 @@ namespace MajorAppMVVM2.ViewModels
             }
         }
 
+        // Свойство для получения и установки глубины груза
         public double Depth
         {
             get => _depth;
@@ -184,6 +198,7 @@ namespace MajorAppMVVM2.ViewModels
             }
         }
 
+        // Свойство для получения и установки веса груза
         public double Weight
         {
             get => _weight;
@@ -195,6 +210,7 @@ namespace MajorAppMVVM2.ViewModels
             }
         }
 
+        // Свойство для получения и установки даты создания заказа
         public DateTime? CreatedDate
         {
             get => _createdDate;
@@ -206,6 +222,7 @@ namespace MajorAppMVVM2.ViewModels
             }
         }
 
+        // Свойство для получения и установки статуса заказа
         public string Status
         {
             get => _status;
@@ -242,6 +259,7 @@ namespace MajorAppMVVM2.ViewModels
             }
         }
 
+        // Команда для сохранения изменений заказа
         public ICommand SaveChangesCommand { get; private set; }
 
         // Определяем, можно ли редактировать поля в зависимости от статуса
@@ -254,6 +272,7 @@ namespace MajorAppMVVM2.ViewModels
         public bool IsDepthEditable => Status == "Новая";
         public bool IsWeightEditable => Status == "Новая";
 
+        // Метод для проверки, можно ли сохранить изменения
         private bool CanSaveChanges()
         {
             // Проверка, что статус можно редактировать
@@ -266,6 +285,7 @@ namespace MajorAppMVVM2.ViewModels
             return canSave;
         }
 
+        // Асинхронный метод для сохранения изменений заказа
         private async Task SaveChanges(bool updateComment)
         {
             try
@@ -309,6 +329,7 @@ namespace MajorAppMVVM2.ViewModels
             }
         }
 
+        // Метод для загрузки деталей заказа
         private void LoadOrderDetails()
         {
             // Загрузка деталей заказа
@@ -336,12 +357,14 @@ namespace MajorAppMVVM2.ViewModels
             OnPropertyChanged(nameof(IsWeightEditable));
         }
 
+        // Метод для скрытия окна редактирования заказа
         private void HideWindow()
         {
             Application.Current.Windows.OfType<EditOrderWindow>().SingleOrDefault(x => x.IsActive)?.Close();
         }
 
 
+        // Метод для обработки изменения статуса заказа на "Отменена"
         private async Task HandleStatusChangeToCancelled()
         {
             var commentWindow = new CommentInputWindow();
@@ -376,6 +399,7 @@ namespace MajorAppMVVM2.ViewModels
             }
         }
 
+        // Метод для уведомления об изменении свойств
         protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
