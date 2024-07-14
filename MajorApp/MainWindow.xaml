@@ -5,13 +5,17 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MajorAppMVVM2"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:viewmodels="clr-namespace:MajorAppMVVM2.ViewModels"
         Title="ГрузМенеджер" Height="700" Width="700"
         mc:Ignorable="d" WindowStartupLocation="CenterScreen">
+    <Window.DataContext>
+        <viewmodels:MainViewModel/>
+    </Window.DataContext>
     <Grid Background="#ffdadada">
         <Border MinWidth="400" Margin="15" Background="white" 
                 VerticalAlignment="Center" Padding="30" MaxWidth="550" CornerRadius="20">
             <Border.Effect>
-                <DropShadowEffect BlurRadius="30" Color="LightGray" ShadowDepth="0"></DropShadowEffect>
+                <DropShadowEffect BlurRadius="30" Color="LightGray" ShadowDepth="0"/>
             </Border.Effect>
             <StackPanel>
                 <TextBlock Text="ГрузМенеджер" FontSize="30" FontWeight="Bold" Margin="0 0 0 20"/>
@@ -21,44 +25,65 @@
                 </Grid>
 
                 <!-- Дата создания -->
-                <DatePicker x:Name="datePickerCreatedDate" materialDesign:HintAssist.Hint="Дата создания" Style="{StaticResource MaterialDesignFloatingHintDatePicker}"/>
+                <DatePicker x:Name="datePickerCreatedDate" materialDesign:HintAssist.Hint="Дата создания" 
+                            Style="{StaticResource MaterialDesignFloatingHintDatePicker}" 
+                            SelectedDate="{Binding CreatedDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                 <!-- Описание груза -->
-                <TextBox x:Name="textBoxDescription" materialDesign:HintAssist.Hint="Описание груза" Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+                <TextBox x:Name="textBoxDescription" materialDesign:HintAssist.Hint="Описание груза" 
+                         Style="{StaticResource MaterialDesignFloatingHintTextBox}" 
+                         Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                 <!-- Адрес получения -->
-                <TextBox x:Name="textBoxPickupAddress" materialDesign:HintAssist.Hint="Адрес получения" Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+                <TextBox x:Name="textBoxPickupAddress" materialDesign:HintAssist.Hint="Адрес получения" 
+                         Style="{StaticResource MaterialDesignFloatingHintTextBox}" 
+                         Text="{Binding PickupAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                 <!-- Адрес доставки -->
-                <TextBox x:Name="textBoxDeliveryAddress" materialDesign:HintAssist.Hint="Адрес доставки" Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+                <TextBox x:Name="textBoxDeliveryAddress" materialDesign:HintAssist.Hint="Адрес доставки" 
+                         Style="{StaticResource MaterialDesignFloatingHintTextBox}" 
+                         Text="{Binding DeliveryAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                 <!-- Комментарий -->
-                <TextBox x:Name="textBoxComment" materialDesign:HintAssist.Hint="Комментарий" Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+                <TextBox x:Name="textBoxComment" materialDesign:HintAssist.Hint="Комментарий" 
+                         Style="{StaticResource MaterialDesignFloatingHintTextBox}" 
+                         Text="{Binding Comment, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                 <!-- Исполнитель -->
-                <ComboBox x:Name="comboBoxExecutor"
-                          materialDesign:HintAssist.Hint="Исполнитель"
-                          IsEditable="True"
-                          IsReadOnly="False"
-                          DisplayMemberPath="Name"
-                          SelectedValuePath="Id"
-                          Style="{StaticResource MaterialDesignFloatingHintComboBox}"
-                          IsTextSearchEnabled="True"/>
+                <ComboBox x:Name="comboBoxExecutor" materialDesign:HintAssist.Hint="Исполнитель"
+                          IsEditable="True" IsReadOnly="False" DisplayMemberPath="Name" 
+                          SelectedValuePath="Id" Style="{StaticResource MaterialDesignFloatingHintComboBox}" 
+                          IsTextSearchEnabled="True" ItemsSource="{Binding Executors}" 
+                          SelectedItem="{Binding SelectedExecutor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                 <!-- Ширина -->
-                <TextBox x:Name="textBoxWidth" materialDesign:HintAssist.Hint="Ширина (см)" Style="{StaticResource MaterialDesignFloatingHintTextBox}" PreviewTextInput="NumericOnly_PreviewTextInput" />
+                <TextBox x:Name="textBoxWidth" materialDesign:HintAssist.Hint="Ширина (см)" 
+                         Style="{StaticResource MaterialDesignFloatingHintTextBox}" 
+                         PreviewTextInput="NumericOnly_PreviewTextInput" 
+                         Text="{Binding Width, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                 <!-- Высота -->
-                <TextBox x:Name="textBoxHeight" materialDesign:HintAssist.Hint="Высота (см)" Style="{StaticResource MaterialDesignFloatingHintTextBox}" PreviewTextInput="NumericOnly_PreviewTextInput" />
+                <TextBox x:Name="textBoxHeight" materialDesign:HintAssist.Hint="Высота (см)" 
+                         Style="{StaticResource MaterialDesignFloatingHintTextBox}" 
+                         PreviewTextInput="NumericOnly_PreviewTextInput" 
+                         Text="{Binding Height, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                 <!-- Глубина -->
-                <TextBox x:Name="textBoxDepth" materialDesign:HintAssist.Hint="Глубина (см)" Style="{StaticResource MaterialDesignFloatingHintTextBox}" PreviewTextInput="NumericOnly_PreviewTextInput" />
+                <TextBox x:Name="textBoxDepth" materialDesign:HintAssist.Hint="Глубина (см)" 
+                         Style="{StaticResource MaterialDesignFloatingHintTextBox}" 
+                         PreviewTextInput="NumericOnly_PreviewTextInput" 
+                         Text="{Binding Depth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                 <!-- Вес -->
-                <TextBox x:Name="textBoxWeight" materialDesign:HintAssist.Hint="Вес (кг)" Style="{StaticResource MaterialDesignFloatingHintTextBox}" PreviewTextInput="NumericOnly_PreviewTextInput" />
+                <TextBox x:Name="textBoxWeight" materialDesign:HintAssist.Hint="Вес (кг)" 
+                         Style="{StaticResource MaterialDesignFloatingHintTextBox}" 
+                         PreviewTextInput="NumericOnly_PreviewTextInput" 
+                         Text="{Binding Weight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                 <!-- Кнопка для создания заявки -->
-                <Button Content="Создать заявку" Margin="0 20" Click="CreateOrder"/>
+                <Button Content="Создать заявку" Margin="0 20" 
+                        Command="{Binding CreateOrderCommand}" 
+                        IsEnabled="{Binding CanCreateOrder}"/>
             </StackPanel>
         </Border>
     </Grid>

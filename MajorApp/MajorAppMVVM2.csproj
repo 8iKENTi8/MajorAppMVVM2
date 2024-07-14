@@ -116,7 +116,9 @@
     <Compile Include="Models\Executor.cs" />
     <Compile Include="Models\Order.cs" />
     <Compile Include="Utils\ExecutorUtils.cs" />
+    <Compile Include="Utils\RelayCommand.cs" />
     <Compile Include="Utils\ValidationUtils.cs" />
+    <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="Windows\CommentInputWindow.xaml.cs">
       <DependentUpon>CommentInputWindow.xaml</DependentUpon>
     </Compile>
