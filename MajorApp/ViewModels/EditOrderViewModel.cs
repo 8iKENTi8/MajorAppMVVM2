@@ -1,6 +1,7 @@
 ﻿using MajorAppMVVM2.Logging;
 using MajorAppMVVM2.Models;
 using MajorAppMVVM2.Utils;
+using MajorAppMVVM2.Windows;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -58,7 +59,7 @@ namespace MajorAppMVVM2.ViewModels
             _order.AttachLogger(_statusChangeLogger);
 
             // Инициализация команд
-            SaveChangesCommand = new RelayCommand(SaveChanges, CanSaveChanges);
+            SaveChangesCommand = new RelayCommand(async () => await SaveChanges(updateComment: true), CanSaveChanges);
 
             // Загрузка данных
             LoadDataAsync();
@@ -209,19 +210,34 @@ namespace MajorAppMVVM2.ViewModels
             get => _status;
             set
             {
-                _status = value;
-                OnPropertyChanged(nameof(Status));
-                // Обновление состояния команды при изменении статуса
-                ((RelayCommand)SaveChangesCommand).RaiseCanExecuteChanged();
-                // Устанавливаем доступность полей в зависимости от статуса
-                OnPropertyChanged(nameof(IsDescriptionEditable));
-                OnPropertyChanged(nameof(IsPickupAddressEditable));
-                OnPropertyChanged(nameof(IsDeliveryAddressEditable));
-                OnPropertyChanged(nameof(IsExecutorEditable));
-                OnPropertyChanged(nameof(IsWidthEditable));
-                OnPropertyChanged(nameof(IsHeightEditable));
-                OnPropertyChanged(nameof(IsDepthEditable));
-                OnPropertyChanged(nameof(IsWeightEditable));
+                if (_status != value)
+                {
+                    _status = value;
+                    OnPropertyChanged(nameof(Status));
+
+                    // Устанавливаем доступность полей в зависимости от статуса
+                    OnPropertyChanged(nameof(IsDescriptionEditable));
+                    OnPropertyChanged(nameof(IsPickupAddressEditable));
+                    OnPropertyChanged(nameof(IsDeliveryAddressEditable));
+                    OnPropertyChanged(nameof(IsExecutorEditable));
+                    OnPropertyChanged(nameof(IsWidthEditable));
+                    OnPropertyChanged(nameof(IsHeightEditable));
+                    OnPropertyChanged(nameof(IsDepthEditable));
+                    OnPropertyChanged(nameof(IsWeightEditable));
+
+                    // Обработка изменения статуса на "Отменена"
+                    if (_status == "Отменена" && _order.Status != "Отменена")
+                    {
+                        _ = HandleStatusChangeToCancelled();
+                    }
+                    else if (_status != "Отменена")
+                    {
+                        _order.Status = _status;
+                    }
+
+                    // Обновление состояния команды при изменении статуса
+                    ((RelayCommand)SaveChangesCommand).RaiseCanExecuteChanged();
+                }
             }
         }
 
@@ -249,7 +265,7 @@ namespace MajorAppMVVM2.ViewModels
             return canSave;
         }
 
-        private async void SaveChanges()
+        private async Task SaveChanges(bool updateComment)
         {
             try
             {
@@ -257,7 +273,11 @@ namespace MajorAppMVVM2.ViewModels
                 _order.Description = Description;
                 _order.PickupAddress = PickupAddress;
                 _order.DeliveryAddress = DeliveryAddress;
-                _order.Comment = Comment;
+                // Обновляем комментарий только если переводим заявку в статус Отменена
+                if (updateComment)
+                {
+                    _order.Comment = Comment;
+                }
                 _order.Executor = SelectedExecutor?.Name;  // Добавил проверку на null
                 _order.Width = Width;
                 _order.Height = Height;
@@ -321,6 +341,38 @@ namespace MajorAppMVVM2.ViewModels
         private void HideWindow()
         {
             Application.Current.Windows.OfType<Window>().SingleOrDefault(x => x.IsActive)?.Hide();
+        }
+
+        private async Task HandleStatusChangeToCancelled()
+        {
+            var commentWindow = new CommentInputWindow();
+            if (commentWindow.ShowDialog() == true)
+            {
+                var comment = commentWindow.Comment;
+
+                // Проверяем, не является ли комментарий пустым
+                if (string.IsNullOrWhiteSpace(comment))
+                {
+                    MessageBox.Show("Комментарий не может быть пустым", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    // Возвращаем статус к предыдущему значению
+                    Status = _order.Status;
+                    return;
+                }
+
+                // Устанавливаем комментарий и статус
+                _order.Comment = comment;
+                _order.Status = Status;
+
+                // Обновляем данные в базе данных
+                await SaveChanges(updateComment: false);
+
+              
+            }
+            else
+            {
+                // Возвращаем статус к предыдущему значению, если окно ввода закрыто без ввода комментария
+                Status = _order.Status;
+            }
         }
 
         protected void OnPropertyChanged(string propertyName)
