@@ -118,7 +118,6 @@
     <Compile Include="Utils\ExecutorUtils.cs" />
     <Compile Include="Utils\HttpClientUtils.cs" />
     <Compile Include="Utils\RelayCommand.cs" />
-    <Compile Include="Utils\ValidationUtils.cs" />
     <Compile Include="ViewModels\EditOrderViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="Windows\CommentInputWindow.xaml.cs">
