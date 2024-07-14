@@ -15,9 +15,11 @@ namespace MajorAppMVVM2.ViewModels
     public class OrdersViewModel : INotifyPropertyChanged
     {
         private ObservableCollection<Order> _orders;
+        private ObservableCollection<Order> _filteredOrders;
         private string _searchText;
         private DateTime? _startDate;
         private DateTime? _endDate;
+        private Order _selectedOrder;  
         private readonly Window _window;
 
         // Свойство для получения и установки коллекции заказов
@@ -28,6 +30,18 @@ namespace MajorAppMVVM2.ViewModels
             {
                 _orders = value;
                 OnPropertyChanged(nameof(Orders));
+                FilterOrders(); 
+            }
+        }
+
+        // Свойство для получения и установки коллекции отфильтрованных заказов
+        public ObservableCollection<Order> FilteredOrders
+        {
+            get => _filteredOrders;
+            set
+            {
+                _filteredOrders = value;
+                OnPropertyChanged(nameof(FilteredOrders));
             }
         }
 
@@ -64,6 +78,17 @@ namespace MajorAppMVVM2.ViewModels
                 _endDate = value;
                 OnPropertyChanged(nameof(EndDate));
                 FilterOrders();
+            }
+        }
+
+        // Свойство для получения и установки выбранного заказа
+        public Order SelectedOrder
+        {
+            get => _selectedOrder;
+            set
+            {
+                _selectedOrder = value;
+                OnPropertyChanged(nameof(SelectedOrder));
             }
         }
 
@@ -121,16 +146,17 @@ namespace MajorAppMVVM2.ViewModels
         // Метод для редактирования выбранной заявки
         private void EditOrder(Order order)
         {
+            if (order == null) return;
+
             var editOrderWindow = new EditOrderWindow(order);
             editOrderWindow.ShowDialog();
-            LoadOrders();
+            LoadOrders();  // Перезагружаем заказы после редактирования заявки
         }
 
         // Асинхронный метод для удаления выбранной заявки
         private async void DeleteOrder(Order order)
         {
-            if (order == null)
-                return;
+            if (order == null) return;
 
             var result = MessageBox.Show($"Вы уверены, что хотите удалить заказ {order.Id}?", "Удалить заявку", MessageBoxButton.YesNo, MessageBoxImage.Question);  // Сообщаем о необходимости подтверждения удаления заявки
 
@@ -178,7 +204,7 @@ namespace MajorAppMVVM2.ViewModels
                 && (!EndDate.HasValue || o.CreatedDate <= EndDate.Value)  // Проверяем, что дата создания заявки меньше или равна конечной дате фильтрации
             ).ToList();
 
-            Orders = new ObservableCollection<Order>(filteredOrders);  // Присваиваем отфильтрованные заказы свойству Orders
+            FilteredOrders = new ObservableCollection<Order>(filteredOrders);  // Присваиваем отфильтрованные заказы свойству FilteredOrders
         }
 
         // Событие для уведомления об изменениях свойств

@@ -7,6 +7,7 @@
         mc:Ignorable="d"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         Title="Список заявок" Height="690" Width="1560" WindowStartupLocation="CenterScreen">
+
     <Grid Background="#ffdadada">
         <Border MinWidth="750" Margin="15" Background="white"
                 VerticalAlignment="Center" Padding="30" MaxWidth="1500" CornerRadius="20">
@@ -22,20 +23,21 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Button Content="Создать новую заявку" Command="{Binding CreateNewOrderCommand}" HorizontalAlignment="Left" Margin="0,0,10,0"/>
+                    <Button Content="Создать новую заявку" Command="{Binding CreateNewOrderCommand}" HorizontalAlignment="Left" Margin="0,0,10,0" Width="200"/>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="1">
                         <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Поиск" Width="200" VerticalContentAlignment="Center" Margin="0,0,10,0" FontSize="16"/>
                         <TextBlock Text="С:" Margin="10 0 8 -8" VerticalAlignment="Center" FontSize="16"/>
                         <DatePicker SelectedDate="{Binding StartDate, Mode=TwoWay}" Width="100" VerticalContentAlignment="Center" Margin="0,0,10,0" FontSize="16" Style="{StaticResource MaterialDesignFloatingHintDatePicker}"/>
-                        <TextBlock Text="По:"  Margin="10 0 8 -8" VerticalAlignment="Center" FontSize="16"/>
+                        <TextBlock Text="По:" Margin="10 0 8 -8" VerticalAlignment="Center" FontSize="16"/>
                         <DatePicker SelectedDate="{Binding EndDate, Mode=TwoWay}" Width="100" VerticalContentAlignment="Center" Margin="0,0,10,0" FontSize="16" Style="{StaticResource MaterialDesignFloatingHintDatePicker}"/>
                     </StackPanel>
                 </Grid>
 
                 <!-- DataGrid для отображения заявок -->
-                <DataGrid ItemsSource="{Binding Orders}" Margin="10" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False"
+                <DataGrid ItemsSource="{Binding FilteredOrders}" Margin="10" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False"
                           VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
-                          VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                          VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                          SelectedItem="{Binding SelectedOrder, Mode=TwoWay}">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Id" Binding="{Binding Id}" Width="50"/>
                         <DataGridTextColumn Header="Статус" Binding="{Binding Status}" Width="80"/>
@@ -63,7 +65,6 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-
                     </DataGrid.Columns>
                 </DataGrid>
             </DockPanel>
