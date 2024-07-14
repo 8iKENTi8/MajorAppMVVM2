@@ -8,7 +8,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         Title="Список заявок" Height="690" Width="1560" WindowStartupLocation="CenterScreen">
     <Grid Background="#ffdadada">
-        <Border MinWidth="750" Margin="15" Background="white" 
+        <Border MinWidth="750" Margin="15" Background="white"
                 VerticalAlignment="Center" Padding="30" MaxWidth="1500" CornerRadius="20">
             <Border.Effect>
                 <DropShadowEffect BlurRadius="30" Color="LightGray" ShadowDepth="0"/>
@@ -22,19 +22,19 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Button Content="Создать новую заявку" Click="CreateNewOrder" HorizontalAlignment="Left" Margin="0,0,10,0"/>
+                    <Button Content="Создать новую заявку" Command="{Binding CreateNewOrderCommand}" HorizontalAlignment="Left" Margin="0,0,10,0"/>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="1">
-                        <TextBox x:Name="searchTextBox" materialDesign:HintAssist.Hint="Поиск" Width="200" VerticalContentAlignment="Center" Margin="0,0,10,0" FontSize="16" TextChanged="SearchTextBox_TextChanged"/>
+                        <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Поиск" Width="200" VerticalContentAlignment="Center" Margin="0,0,10,0" FontSize="16"/>
                         <TextBlock Text="С:" Margin="10 0 8 -8" VerticalAlignment="Center" FontSize="16"/>
-                        <DatePicker x:Name="startDatePicker" SelectedDateChanged="DatePicker_SelectedDateChanged" Width="100" VerticalContentAlignment="Center" Margin="0,0,10,0" FontSize="16" Style="{StaticResource MaterialDesignFloatingHintDatePicker}"/>
+                        <DatePicker SelectedDate="{Binding StartDate, Mode=TwoWay}" Width="100" VerticalContentAlignment="Center" Margin="0,0,10,0" FontSize="16" Style="{StaticResource MaterialDesignFloatingHintDatePicker}"/>
                         <TextBlock Text="По:"  Margin="10 0 8 -8" VerticalAlignment="Center" FontSize="16"/>
-                        <DatePicker x:Name="endDatePicker" SelectedDateChanged="DatePicker_SelectedDateChanged"  Width="100" VerticalContentAlignment="Center" Margin="0,0,10,0" FontSize="16" Style="{StaticResource MaterialDesignFloatingHintDatePicker}"/>
+                        <DatePicker SelectedDate="{Binding EndDate, Mode=TwoWay}" Width="100" VerticalContentAlignment="Center" Margin="0,0,10,0" FontSize="16" Style="{StaticResource MaterialDesignFloatingHintDatePicker}"/>
                     </StackPanel>
                 </Grid>
 
                 <!-- DataGrid для отображения заявок -->
-                <DataGrid x:Name="dataGridOrders" Margin="10" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False"
-                          VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" 
+                <DataGrid ItemsSource="{Binding Orders}" Margin="10" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False"
+                          VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
                           VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Id" Binding="{Binding Id}" Width="50"/>
@@ -50,14 +50,16 @@
                         <DataGridTemplateColumn Header="Редактировать" Width="150">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Button Content="✏️ Редактировать" Foreground="Black" Width="120" Height="30" Click="EditOrder"/>
+                                    <Button Content="✏️ Редактировать" Foreground="Black" Width="120" Height="30" Command="{Binding DataContext.EditOrderCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                            CommandParameter="{Binding}"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
                         <DataGridTemplateColumn Header="Удалить" Width="150">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Button Content="❌ Удалить" Foreground="Black" Width="120" Height="30" Click="DeleteOrder"/>
+                                    <Button Content="❌ Удалить" Foreground="Black" Width="120" Height="30" Command="{Binding DataContext.DeleteOrderCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                            CommandParameter="{Binding}"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>

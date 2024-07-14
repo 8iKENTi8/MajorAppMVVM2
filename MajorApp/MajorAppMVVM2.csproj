@@ -120,6 +120,7 @@
     <Compile Include="Utils\RelayCommand.cs" />
     <Compile Include="ViewModels\EditOrderViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="ViewModels\OrdersViewModel.cs" />
     <Compile Include="Windows\CommentInputWindow.xaml.cs">
       <DependentUpon>CommentInputWindow.xaml</DependentUpon>
     </Compile>
