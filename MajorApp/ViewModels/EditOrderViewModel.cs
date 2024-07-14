@@ -33,6 +33,24 @@ namespace MajorAppMVVM2.ViewModels
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        private List<string> _statuses = new List<string>
+        {
+            "Новая",
+            "Передано на выполнение",
+            "Выполнено",
+            "Отменена"
+        };
+
+        public List<string> Statuses
+        {
+            get => _statuses;
+            set
+            {
+                _statuses = value;
+                OnPropertyChanged(nameof(Statuses));
+            }
+        }
+
         public EditOrderViewModel(Order order)
         {
             _order = order;
@@ -43,8 +61,26 @@ namespace MajorAppMVVM2.ViewModels
             SaveChangesCommand = new RelayCommand(SaveChanges, CanSaveChanges);
 
             // Загрузка данных
-            LoadOrderDetails();
-            LoadExecutors();
+            LoadDataAsync();
+        }
+
+        private async void LoadDataAsync()
+        {
+            try
+            {
+                // Загрузка исполнителей
+                Executors = await ExecutorUtils.GetExecutorsAsync();
+
+                // Установка статусов
+                Statuses = new List<string> { "Новая", "Передано на выполнение", "Выполнено", "Отменена" };
+
+                // Загрузка деталей заказа после загрузки исполнителей
+                LoadOrderDetails();
+            }
+            catch (HttpRequestException ex)
+            {
+                MessageBox.Show($"Не удалось загрузить исполнителей: {ex.Message}");
+            }
         }
 
         public List<Executor> Executors
@@ -54,6 +90,7 @@ namespace MajorAppMVVM2.ViewModels
             {
                 _executors = value;
                 OnPropertyChanged(nameof(Executors));  // Указание имени свойства
+                ((RelayCommand)SaveChangesCommand).RaiseCanExecuteChanged();
             }
         }
 
@@ -64,7 +101,8 @@ namespace MajorAppMVVM2.ViewModels
             {
                 _selectedExecutor = value;
                 OnPropertyChanged(nameof(SelectedExecutor));
-                OnPropertyChanged(nameof(SaveChangesCommand));  // Обновление состояния команды
+                // Обновление состояния команды при изменении выбранного исполнителя
+                ((RelayCommand)SaveChangesCommand).RaiseCanExecuteChanged();
             }
         }
 
@@ -75,7 +113,8 @@ namespace MajorAppMVVM2.ViewModels
             {
                 _description = value;
                 OnPropertyChanged(nameof(Description));
-                OnPropertyChanged(nameof(SaveChangesCommand));  // Обновление состояния команды
+                // Обновление состояния команды при изменении описания
+                ((RelayCommand)SaveChangesCommand).RaiseCanExecuteChanged();
             }
         }
 
@@ -86,7 +125,8 @@ namespace MajorAppMVVM2.ViewModels
             {
                 _pickupAddress = value;
                 OnPropertyChanged(nameof(PickupAddress));
-                OnPropertyChanged(nameof(SaveChangesCommand));  // Обновление состояния команды
+                // Обновление состояния команды при изменении адреса подачи
+                ((RelayCommand)SaveChangesCommand).RaiseCanExecuteChanged();
             }
         }
 
@@ -97,7 +137,8 @@ namespace MajorAppMVVM2.ViewModels
             {
                 _deliveryAddress = value;
                 OnPropertyChanged(nameof(DeliveryAddress));
-                OnPropertyChanged(nameof(SaveChangesCommand));  // Обновление состояния команды
+                // Обновление состояния команды при изменении адреса доставки
+                ((RelayCommand)SaveChangesCommand).RaiseCanExecuteChanged();
             }
         }
 
@@ -108,7 +149,8 @@ namespace MajorAppMVVM2.ViewModels
             {
                 _comment = value;
                 OnPropertyChanged(nameof(Comment));
-                OnPropertyChanged(nameof(SaveChangesCommand));  // Обновление состояния команды
+                // Обновление состояния команды при изменении комментария
+                ((RelayCommand)SaveChangesCommand).RaiseCanExecuteChanged();
             }
         }
 
@@ -119,7 +161,8 @@ namespace MajorAppMVVM2.ViewModels
             {
                 _width = value;
                 OnPropertyChanged(nameof(Width));
-                OnPropertyChanged(nameof(SaveChangesCommand));  // Обновление состояния команды
+                // Обновление состояния команды при изменении ширины
+                ((RelayCommand)SaveChangesCommand).RaiseCanExecuteChanged();
             }
         }
 
@@ -130,7 +173,8 @@ namespace MajorAppMVVM2.ViewModels
             {
                 _height = value;
                 OnPropertyChanged(nameof(Height));
-                OnPropertyChanged(nameof(SaveChangesCommand));  // Обновление состояния команды
+                // Обновление состояния команды при изменении высоты
+                ((RelayCommand)SaveChangesCommand).RaiseCanExecuteChanged();
             }
         }
 
@@ -141,7 +185,8 @@ namespace MajorAppMVVM2.ViewModels
             {
                 _depth = value;
                 OnPropertyChanged(nameof(Depth));
-                OnPropertyChanged(nameof(SaveChangesCommand));  // Обновление состояния команды
+                // Обновление состояния команды при изменении глубины
+                ((RelayCommand)SaveChangesCommand).RaiseCanExecuteChanged();
             }
         }
 
@@ -152,7 +197,8 @@ namespace MajorAppMVVM2.ViewModels
             {
                 _weight = value;
                 OnPropertyChanged(nameof(Weight));
-                OnPropertyChanged(nameof(SaveChangesCommand));  // Обновление состояния команды
+                // Обновление состояния команды при изменении веса
+                ((RelayCommand)SaveChangesCommand).RaiseCanExecuteChanged();
             }
         }
 
@@ -163,7 +209,8 @@ namespace MajorAppMVVM2.ViewModels
             {
                 _createdDate = value;
                 OnPropertyChanged(nameof(CreatedDate));
-                OnPropertyChanged(nameof(SaveChangesCommand));  // Обновление состояния команды
+                // Обновление состояния команды при изменении даты создания
+                ((RelayCommand)SaveChangesCommand).RaiseCanExecuteChanged();
             }
         }
 
@@ -174,7 +221,8 @@ namespace MajorAppMVVM2.ViewModels
             {
                 _status = value;
                 OnPropertyChanged(nameof(Status));
-                OnPropertyChanged(nameof(SaveChangesCommand));  // Обновление состояния команды
+                // Обновление состояния команды при изменении статуса
+                ((RelayCommand)SaveChangesCommand).RaiseCanExecuteChanged();
             }
         }
 
@@ -215,7 +263,7 @@ namespace MajorAppMVVM2.ViewModels
                 {
                     MessageBox.Show("Изменения сохранены");
                     // Закрытие окна редактирования после успешного сохранения
-                    CloseWindow();
+                    HideWindow();
                 }
                 else
                 {
@@ -229,18 +277,6 @@ namespace MajorAppMVVM2.ViewModels
             catch (Exception ex)
             {
                 MessageBox.Show($"Произошла ошибка: {ex.Message}");
-            }
-        }
-
-        private async void LoadExecutors()
-        {
-            try
-            {
-                Executors = await ExecutorUtils.GetExecutorsAsync();
-            }
-            catch (HttpRequestException ex)
-            {
-                MessageBox.Show($"Не удалось загрузить исполнителей: {ex.Message}");
             }
         }
 
@@ -262,15 +298,16 @@ namespace MajorAppMVVM2.ViewModels
             SelectedExecutor = Executors?.FirstOrDefault(e => e.Name == _order.Executor);
         }
 
-        private void CloseWindow()
+        private void HideWindow()
         {
-            Application.Current.Windows.OfType<Window>().SingleOrDefault(x => x.IsActive)?.Close();
+            Application.Current.Windows.OfType<Window>().SingleOrDefault(x => x.IsActive)?.Hide();
         }
 
         protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
+            // Обновляем состояние команды при изменении свойств, влияющих на возможность сохранения изменений
             if (propertyName == nameof(Description) ||
                 propertyName == nameof(PickupAddress) ||
                 propertyName == nameof(DeliveryAddress) ||
